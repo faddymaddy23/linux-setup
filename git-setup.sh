@@ -34,3 +34,19 @@ git config --global url."git@github.com:".insteadOf "https://github.com/"
 git config --global --list
 # check file permissions
 ls -l ~/.ssh
+
+# Git usage example
+git clone https://gitlab.com/Web/repo-name.git
+cd repo-name
+git checkout development  
+git checkout -b feature/name
+git add . # after making changes
+git commit -m "added name feature"   
+git push origin feature/name
+git checkout development
+
+git merge --no-ff feature/name
+git tag 1.0.1
+git push origin development --tags
+
+git pull origin development
