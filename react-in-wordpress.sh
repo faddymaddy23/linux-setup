@@ -5,6 +5,9 @@ npm create vite@latest react
 # Install dependencies
 cd react
 npm install tailwindcss @tailwindcss/vite
+npm install react-router
+npm install -D lucide-react
+npm install -D gulp
 
 
 # Update vite config
@@ -17,13 +20,14 @@ import path from "path";
 export default defineConfig({
     plugins: [react(), tailwindcss()],
     build: {
-        outDir: "../build", // This is relative to your `react` folder
-        emptyOutDir: true,
+        outDir: "../dist",
         rollupOptions: {
-            input: path.resolve(__dirname, "src/main.jsx"), // app entry point
+            input: path.resolve(__dirname, "src/main.jsx"),
             output: {
-                entryFileNames: "[name].js",
-                assetFileNames: "[name].[ext]",
+                // Single bundle for easy WordPress enqueue
+                entryFileNames: "wn-lcb-chat.js",
+                chunkFileNames: "wn-lcb-chat-[name].js",
+                assetFileNames: "wn-lcb-chat.[ext]",
             },
         },
     },
@@ -32,6 +36,60 @@ export default defineConfig({
 
 # Import tailwind in your main css file
 @import "tailwindcss";
+
+# gulpfile.cjs file:
+const { watch, series } = require("gulp");
+const { exec } = require("child_process");
+const browserSync = require("browser-sync").create();
+const path = require("path");
+
+// Run your existing npm build script
+function buildReact(cb) {
+  exec("npm run build", (err, stdout, stderr) => {
+    console.log(stdout);
+    console.error(stderr);
+    cb(err);
+  });
+}
+
+// Reload browser
+function reloadBrowser(cb) {
+  browserSync.reload();
+  cb();
+}
+
+// Start BrowserSync server (proxy to local WordPress)
+function startBrowserSync(cb) {
+  browserSync.init({
+    proxy: "http://localhost/woo/lms-chatbot", // <-- WordPress page
+    open: false,
+    notify: false,
+    ghostMode: false,
+  });
+  cb();
+}
+
+// Watch for changes in JSX, TSX, and CSS files
+function watchReact() {
+  watch(
+    [
+      "src/**/*.{js,jsx,ts,tsx,css}", // JS/TS/CSS in src
+      "*.html", // index.html
+      "*.css", // root-level CSS files like index.css
+      "tailwind.config.js",
+    ],
+    series(buildReact, reloadBrowser),
+  );
+}
+
+exports.default = series(buildReact, startBrowserSync, watchReact);
+exports.build = buildReact;
+
+# Add gulp script in package.json
+
+    "watch": "gulp",
+
+
 
 
 # Register the Style and Script in wordpress
