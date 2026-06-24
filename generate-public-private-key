@@ -1,0 +1,25 @@
+mkdir -p ~/.ssh/websiteName
+
+ssh-keygen -t ed25519 \
+  -f ~/.ssh/websiteName/id_ed25519 \
+  -C "userName@websiteName"
+
+chmod 700 ~/.ssh
+chmod 700 ~/.ssh/websiteName
+chmod 600 ~/.ssh/websiteName/id_ed25519
+chmod 644 ~/.ssh/websiteName/id_ed25519.pub
+
+nano ~/.ssh/config
+# Add Echelon Front
+Host websiteName
+HostName IP/URL
+User userName
+Port 22
+IdentityFile ~/.ssh/websiteName/id_ed25519
+
+# Cat to copy
+cat ~/.ssh/websiteName/id_ed25519.pub
+
+# Test connection:
+ssh websiteName
+sftp websiteName
