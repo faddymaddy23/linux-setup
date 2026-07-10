@@ -10,7 +10,7 @@ chmod 600 ~/.ssh/websiteName/id_ed25519
 chmod 644 ~/.ssh/websiteName/id_ed25519.pub
 
 nano ~/.ssh/config
-# Add Echelon Front
+# Add client name
 Host websiteName
 HostName IP/URL
 User userName
