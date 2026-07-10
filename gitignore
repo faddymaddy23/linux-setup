@@ -50,6 +50,7 @@ vendor/
 *.sql
 *.tar.gz
 *.zip
+tmp-i18n/
 
 
 # Optional: ignore source maps in production
