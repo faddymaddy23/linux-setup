@@ -51,6 +51,14 @@ wp i18n make-json languages --no-purge
 #    (WordPress checks this filename pattern before its md5-hash fallback)
 mv languages/wn-lcb-fr_FR-<hash>.json languages/wn-lcb-fr_FR-<plugin_name>-app-js.json
 
+# 10. In your plugin, enqueue the script and load the translations:
+use array('wp-i18n') as dependency when enqueueing the script, and then call wp_set_script_translations() to load the translations for your script handle.
+wp_set_script_translations(
+  $this->plugin_name . '-app',
+  'domain_name',
+  plugin_dir_path(__FILE__) . 'languages'
+);
+
 
 # Translation functions:
 
